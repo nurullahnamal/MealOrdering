@@ -1,20 +1,27 @@
-﻿    using AutoMapper;
-    using AutoMapper.QueryableExtensions;
-    using MealOrdering.Server.Data.Context;
-    using MealOrdering.Server.Services.Infrastruce;
-    using MealOrdering.Shared.DTO;
-    using Microsoft.EntityFrameworkCore;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using MealOrdering.Server.Data.Context;
+using MealOrdering.Server.Services.Infrastruce;
+using MealOrdering.Shared.DTO;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
-    namespace MealOrdering.Server.Services.Services;
+namespace MealOrdering.Server.Services.Services;
 
-    public class UserService : IUserService
-    {
+public class UserService : IUserService
+{
     private readonly IMapper mapper;
     private readonly MealOrderingDbContext context;
-    public UserService(IMapper Mapper, MealOrderingDbContext Context)
+    private readonly IConfiguration  configuration;
+
+    public UserService(IMapper Mapper, MealOrderingDbContext Context,IConfiguration Configuration)
     {
         mapper = Mapper;
         context = Context;
+        configuration = Configuration;
     }
 
     public async Task<UserDTO> GetUserById(Guid id)
@@ -72,4 +79,23 @@
         return result > 0;
 
     }
+
+    public string Login(string EMail, string Password)
+    {
+        //veritabanı kulanıcı doğrulama işlemi yapıldı
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSecurityKey"]));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var expiry = DateTime.Now.AddDays(int.Parse((configuration["JwtExpiryInDays"].ToString())));
+        var claims = new[]
+        {
+            new Claim(ClaimTypes.Email,EMail)
+        };
+
+        var token = new JwtSecurityToken(configuration["JwtIssuer"], configuration["JwtAudience"], claims, null, expiry,
+            creds);
+        String tokenStr = new JwtSecurityTokenHandler().WriteToken(token);
+        return tokenStr;
+
+
     }
+}
