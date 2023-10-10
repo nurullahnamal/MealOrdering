@@ -17,9 +17,6 @@ namespace MealOrdering.Client.Utils
             modalService = ModalService;
         }
 
-
-
-
         public async Task ShowMessageAsync(String Title, String Message, int Duration = 0)
         {
             ModalParameters mParams = new ModalParameters();
