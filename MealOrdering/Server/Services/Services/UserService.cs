@@ -1,14 +1,14 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using MealOrdering.Server.Data.Context;
-using MealOrdering.Server.Services.Infrastruce;
-using MealOrdering.Shared.DTO;
-using Microsoft.EntityFrameworkCore;
+﻿    using AutoMapper;
+    using AutoMapper.QueryableExtensions;
+    using MealOrdering.Server.Data.Context;
+    using MealOrdering.Server.Services.Infrastruce;
+    using MealOrdering.Shared.DTO;
+    using Microsoft.EntityFrameworkCore;
 
-namespace MealOrdering.Server.Services.Services;
+    namespace MealOrdering.Server.Services.Services;
 
-public class UserService : IUserService
-{
+    public class UserService : IUserService
+    {
     private readonly IMapper mapper;
     private readonly MealOrderingDbContext context;
     public UserService(IMapper Mapper, MealOrderingDbContext Context)
@@ -72,4 +72,4 @@ public class UserService : IUserService
         return result > 0;
 
     }
-}
+    }
